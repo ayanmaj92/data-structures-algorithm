@@ -11,7 +11,7 @@ class Vertex:
   def __init__(self, key, data, sum, left, right, parent):
     (self.key, self.data, self.sum, self.left, self.right, self.parent) = (key, data, sum, left, right, parent)
 
-
+# Updates key of node, updates the size
 def update(v):
 	if v == None:
 		return
@@ -20,7 +20,7 @@ def update(v):
 		v.left.parent = v
 	if v.right != None:
 		v.right.parent = v
-
+# Small Rotation
 def smallRotation(v):
   parent = v.parent
   if parent == None:
@@ -42,7 +42,7 @@ def smallRotation(v):
       grandparent.left = v
     else:
       grandparent.right = v
-
+# Calls Zig-Zig, Zig-Zag
 def bigRotation(v):
   if v.parent.left == v and v.parent.parent.left == v.parent:
     # Zig-zig
@@ -79,7 +79,6 @@ def splay(v):
 # then result is None.
 
 def find(root, key):
-	#key = key + 1
 	v = root
 	last = root
 	next = None
@@ -98,25 +97,7 @@ def find(root, key):
 			key = key - sm1 - 1
 	root = splay(last)
 	return (next, root)
-
-
-def find_old(root, key):
-  v = root
-  last = root
-  next = None
-  while v != None:
-    if v.key >= key and (next == None or v.key < next.key):
-      next = v
-    last = v
-    if v.key == key:
-      break
-    if v.key < key:
-      v = v.right
-    else:
-      v = v.left
-  root = splay(last)
-  return (next, root)
-
+# Splits tree based on a key
 def split(root, key):
 	(result, root) = find(root, key+1)
 	if result == None:
@@ -130,7 +111,7 @@ def split(root, key):
 	update(right)
 	return (left, right)
 
-
+# Merge left and right trees
 def merge(left, right):
   if left == None:
     return right
@@ -145,7 +126,7 @@ def merge(left, right):
 
 root = None
 
-
+# Inorder Traversal of the Tree
 def inorder (p):
 	res = ""
 	key_do = 0
@@ -165,7 +146,7 @@ def inorder (p):
 				current = temp[-1].right
 				temp.pop()
 	return res
-
+# Inserts new node into the tree
 def insert(x,c):
   global root
   (left, right) = split(root, x)
@@ -174,8 +155,7 @@ def insert(x,c):
     new_vertex = Vertex(x, c, x, None, None, None)
   root = merge(merge(left, new_vertex), right)
   update(root)
-
-
+# Define the class Rope
 class Rope:
 	def __init__(self, s):
 		self.s = s
@@ -194,16 +174,18 @@ class Rope:
 		t = self.s1[0:i] + self.s1[j+1:]
 		self.s1 = t[0:k] + self.s1[i:j + 1] + t[k:]
 	'''
-
+	# Main processing of the node
 	def process(self, i, j, k):
 		global root
-
+		# Split the entire tree into 3 parts: left, middle part from i to j, and right
 		(left, middle) = split(root, i)
 		(middle, right) = split(middle, j - i + 1)
-
+		
 		t, r = None, None
+		# Boundary case: when k has max value
 		if k == len(self.s) - (j - i + 1):
 			root = merge(left, merge(right, middle))
+		# Boundary case: when k is same as i
 		elif k == i:
 			root = merge(merge(left, middle), right)
 		elif k != 0:
